@@ -104,3 +104,31 @@ KING_WEN_SEQUENCE.forEach(([lines], i) => { LINES_TO_HEXAGRAM[lines] = i })
 export function asciiToHexLines(char) {
   return ASCII_MAP[char].slice(0, 6)
 }
+
+export function morseEncode(text) {
+  return text.split('').map(ch => ch === ' ' ? '/' : (MORSE_MAP[ch] || ''))
+    .join(' ').replace(/\. /g, '· ').replace(/\./g, '·')
+}
+
+export function baudotEncode(text) {
+  return text.replace(/ /g, '').split('').map(ch => BAUDOT_MAP[ch] || '').join(' ')
+}
+
+export function brailleEncode(text) {
+  return text.replace(/ /g, '').split('').map(ch => {
+    const bits = BRAILLE_MAP[ch]
+    if (!bits) return ''
+    let code = 0
+    for (let i = 0; i < 6; i++) if (bits[i] === '1') code |= (1 << i)
+    return String.fromCodePoint(0x2800 + code)
+  }).join('')
+}
+
+export function asciiEncode(text) {
+  return text.replace(/ /g, '').split('').map(ch => ASCII_MAP[ch] || '').join(' ')
+}
+
+export function ichingEncode(text) {
+  const trigrams = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷']
+  return text.replace(/ /g, '').split('').map((ch, i) => trigrams[i % trigrams.length]).join(' ')
+}
