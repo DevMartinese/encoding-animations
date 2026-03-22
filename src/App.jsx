@@ -1,15 +1,21 @@
-import { useControls } from 'leva'
-import EncodingAnimation from './EncodingAnimation/EncodingAnimation'
+import { Suspense } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import ExplorationsGrid from './ExplorationsGrid'
+import { explorations } from './explorations'
 
 function App() {
-  const { mode, scrollDuration, skipMorseIntro, showPhaseLabels } = useControls({
-    mode: { value: 'scroll', options: ['auto', 'scroll', 'parallax'] },
-    scrollDuration: { value: 1.2, min: 0.2, max: 5, step: 0.1 },
-    skipMorseIntro: true,
-    showPhaseLabels: { value: true, label: 'Phase Labels' },
-  })
-
-  return <EncodingAnimation key={`${mode}-${skipMorseIntro}`} mode={mode} scrollDuration={scrollDuration} skipMorseIntro={skipMorseIntro} showPhaseLabels={showPhaseLabels} />
+  return (
+    <BrowserRouter>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<ExplorationsGrid />} />
+          {explorations.map((exp) => (
+            <Route key={exp.id} path={`/${exp.id}`} element={<exp.component />} />
+          ))}
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  )
 }
 
 export default App
